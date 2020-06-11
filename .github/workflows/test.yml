@@ -1,0 +1,24 @@
+name: "build-jdk-openj9 with adoptopenjdk openjdk-build linux"
+on: # rebuild any PRs and main branch changes
+  push:
+    branches-ignore:
+      - '**'
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-16.04, macos-10.15]
+    steps:
+    - uses: actions/checkout@v1
+    - uses: ./
+      id: buildJDK
+      with: 
+        javaToBuild: 'jdk14u'
+    - run: ${{ steps.buildJDK.outputs.BuildJDKDir }}/bin/java -version
+    - uses: actions/upload-artifact@v2
+      with:
+        name: buildJDK
+        path: ./**/artifacts/*.tar.gz/

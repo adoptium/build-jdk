@@ -1,0 +1,17 @@
+name: 'build-jdk'
+description: 'Build different version of openjdk from AdoptOpenJDK community'
+author: 'Sophia Guo'
+inputs:
+  javaToBuild:
+    description: 'openjdk version'
+    default: 'jdk11u'     ## jdk8u cannot be built on macOS 10.14 or 10.13
+  impl:
+    default: 'hotspot'
+  usePRRef:
+    description: 'A boolean value ("true" or "false") on whether using default openjdk-build repo or PR repo.'
+    required: false
+outputs:
+  BuildJDKDir: # build jdk images directory
+runs:
+  using: 'node12'
+  main: 'dist/index.js'
