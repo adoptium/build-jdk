@@ -43,7 +43,14 @@ export async function buildJDK(
 
   //pre-install dependencies
   await installDependencies(javaToBuild, impl)
-  await getBootJdk(javaToBuild, impl)
+  let jdkBootDir = ''
+  const bootJDKVersion = getBootJdkVersion(javaToBuild)
+
+  if (`JAVA_HOME_${bootJDKVersion}_X64` in process.env) {
+    jdkBootDir = process.env[`JAVA_HOME_${bootJDKVersion}_X64`] as string
+  } else {
+    jdkBootDir = await getBootJdk(bootJDKVersion, impl)
+  }
   
   await getOpenjdkBuildResource(usePRRef)
   //got to build Dir
@@ -53,7 +60,6 @@ export async function buildJDK(
   // workround of issue https://github.com/sophia-guo/build-jdk/issues/6
   core.exportVariable('ARCHITECTURE', 'x64')
   let configureArgs
-  let jdkBootDir = `${workDir}/jdk/boot`
   const fileName = `Open${javaToBuild.toUpperCase()}-jdk_x64_${targetOs}_${impl}_${time}`
   let fullFileName = `${fileName}.tar.gz`
   if (`${targetOs}` === 'mac') {
@@ -70,7 +76,6 @@ export async function buildJDK(
     } else {
       configureArgs = "--with-freemarker-jar='c:/freemarker.jar' --with-openssl='c:/OpenSSL-1.1.1g-x86_64-VS2017' --enable-openssl-bundling --enable-cuda -with-cuda='C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v9.0'"
     }
-    jdkBootDir = 'c:/jdkboot'
     fullFileName = `${fileName}.zip`
   }
 
@@ -248,10 +253,8 @@ async function installLinuxDepends(javaToBuild: string, impl: string): Promise<v
 }
 
 //TODO: side effects of using pre-installed jdk on github action virtual machine
-async function getBootJdk(javaToBuild: string, impl: string): Promise<void> {
-  const bootJDKVersion = getBootJdkVersion(javaToBuild)
-
-  if (parseInt(bootJDKVersion) > 8) {
+async function getBootJdk(bootJDKVersion: string, impl: string): Promise<string> {
+    if (parseInt(bootJDKVersion) > 8) {
     let bootjdkJar
     // TODO: issue open openj9,mac, 10 ga : https://api.adoptopenjdk.net/v3/binary/latest/10/ga/mac/x64/jdk/openj9/normal/adoptopenjdk doesn't work
     if (
@@ -284,11 +287,17 @@ async function getBootJdk(javaToBuild: string, impl: string): Promise<void> {
     }
     await io.rmRF(`${bootjdkJar}`)
   } else {
-    //TODO : need to update
+    //TODO : need to update for jdk8
     const jdk8Jar = await tc.downloadTool('https://api.adoptopenjdk.net/v2/binary/releases/openjdk8?os=mac&release=latest&arch=x64&heap_size=normal&type=jdk&openjdk_impl=hotspot')
     await exec.exec(`sudo tar -xzf ${jdk8Jar} -C ./jdk/home --strip=3`)
     await io.rmRF(`${jdk8Jar}`)
   }
+
+  if (IS_WINDOWS) {
+    return 'c:/jdkboot'
+  } else {
+    return `${workDir}/jdk/boot`
+  } 
 }
 
 function getBootJdkVersion(javaToBuild: string): string {

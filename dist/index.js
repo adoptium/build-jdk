@@ -3209,7 +3209,14 @@ function buildJDK(javaToBuild, impl, usePRRef) {
         process.chdir(`${workDir}`);
         //pre-install dependencies
         yield installDependencies(javaToBuild, impl);
-        yield getBootJdk(javaToBuild, impl);
+        let jdkBootDir = '';
+        const bootJDKVersion = getBootJdkVersion(javaToBuild);
+        if (`JAVA_HOME_${bootJDKVersion}_X64` in process.env) {
+            jdkBootDir = process.env[`JAVA_HOME_${bootJDKVersion}_X64`];
+        }
+        else {
+            jdkBootDir = yield getBootJdk(bootJDKVersion, impl);
+        }
         yield getOpenjdkBuildResource(usePRRef);
         //got to build Dir
         process.chdir(`${buildDir}`);
@@ -3217,7 +3224,6 @@ function buildJDK(javaToBuild, impl, usePRRef) {
         // workround of issue https://github.com/sophia-guo/build-jdk/issues/6
         core.exportVariable('ARCHITECTURE', 'x64');
         let configureArgs;
-        let jdkBootDir = `${workDir}/jdk/boot`;
         const fileName = `Open${javaToBuild.toUpperCase()}-jdk_x64_${targetOs}_${impl}_${time}`;
         let fullFileName = `${fileName}.tar.gz`;
         if (`${targetOs}` === 'mac') {
@@ -3238,7 +3244,6 @@ function buildJDK(javaToBuild, impl, usePRRef) {
             else {
                 configureArgs = "--with-freemarker-jar='c:/freemarker.jar' --with-openssl='c:/OpenSSL-1.1.1g-x86_64-VS2017' --enable-openssl-bundling --enable-cuda -with-cuda='C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v9.0'";
             }
-            jdkBootDir = 'c:/jdkboot';
             fullFileName = `${fileName}.zip`;
         }
         yield exec.exec(`bash ./makejdk-any-platform.sh \
@@ -3407,9 +3412,8 @@ function installLinuxDepends(javaToBuild, impl) {
     });
 }
 //TODO: side effects of using pre-installed jdk on github action virtual machine
-function getBootJdk(javaToBuild, impl) {
+function getBootJdk(bootJDKVersion, impl) {
     return __awaiter(this, void 0, void 0, function* () {
-        const bootJDKVersion = getBootJdkVersion(javaToBuild);
         if (parseInt(bootJDKVersion) > 8) {
             let bootjdkJar;
             // TODO: issue open openj9,mac, 10 ga : https://api.adoptopenjdk.net/v3/binary/latest/10/ga/mac/x64/jdk/openj9/normal/adoptopenjdk doesn't work
@@ -3445,10 +3449,16 @@ function getBootJdk(javaToBuild, impl) {
             yield io.rmRF(`${bootjdkJar}`);
         }
         else {
-            //TODO : need to update
+            //TODO : need to update for jdk8
             const jdk8Jar = yield tc.downloadTool('https://api.adoptopenjdk.net/v2/binary/releases/openjdk8?os=mac&release=latest&arch=x64&heap_size=normal&type=jdk&openjdk_impl=hotspot');
             yield exec.exec(`sudo tar -xzf ${jdk8Jar} -C ./jdk/home --strip=3`);
             yield io.rmRF(`${jdk8Jar}`);
+        }
+        if (IS_WINDOWS) {
+            return 'c:/jdkboot';
+        }
+        else {
+            return `${workDir}/jdk/boot`;
         }
     });
 }
