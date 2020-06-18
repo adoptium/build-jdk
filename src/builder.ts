@@ -48,6 +48,11 @@ export async function buildJDK(
 
   if (`JAVA_HOME_${bootJDKVersion}_X64` in process.env) {
     jdkBootDir = process.env[`JAVA_HOME_${bootJDKVersion}_X64`] as string
+    if (IS_WINDOWS) {
+      jdkBootDir = jdkBootDir.replace(/\s/g, '')
+      jdkBootDir = jdkBootDir.replace(/\\/g, '/')
+      jdkBootDir = jdkBootDir.replace(/ProgramFiles/g, 'Progra~1')
+    }
   } else {
     jdkBootDir = await getBootJdk(bootJDKVersion, impl)
   }
