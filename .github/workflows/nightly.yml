@@ -39,11 +39,11 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - uses: AdoptOpenJDK/build-jdk@v1
-      id: build-jdk
+      id: buildJDK
       with: 
         javaToBuild: 'jdk14u'
         impl: 'openj9'
-    - run: ${{ steps.buildOpenj9.outputs.BuildJDKDir }}/bin/java -version
+    - run: ${{ steps.buildJDK.outputs.BuildJDKDir }}/bin/java -version
   openj911:
     runs-on: ${{ matrix.os }}
     strategy:
@@ -53,8 +53,8 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - uses: AdoptOpenJDK/build-jdk@v1
-      id: build-jdk
+      id: buildJDK
       with: 
         javaToBuild: 'jdk11u'
         impl: 'openj9'
-    - run: ${{ steps.buildOpenj9.outputs.BuildJDKDir }}/bin/java -version
+    - run: ${{ steps.buildJDK.outputs.BuildJDKDir }}/bin/java -version
