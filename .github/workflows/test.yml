@@ -5,57 +5,32 @@ on:
       - master
 
 jobs:
-  hotspot14:
+  hotspot:
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
         os: [ubuntu-16.04, macos-10.15, windows-2016]
+        javaToBuild: [jdk11u, jdk14u]
     steps:
     - uses: actions/checkout@v1
     - uses: ./
       id: buildJDK
       with: 
-        javaToBuild: 'jdk14u'
+        javaToBuild: ${{ matrix.javaToBuild}}
     - run: ${{ steps.buildJDK.outputs.BuildJDKDir }}/bin/java -version
-  hotspot11:
+  openj9:
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-16.04, macos-10.15, windows-2016]
+        os: [ubuntu-16.04, macos-10.15]
+        javaToBuild: [jdk11u, jdk14u]
     steps:
     - uses: actions/checkout@v1
     - uses: ./
       id: buildJDK
       with: 
-        javaToBuild: 'jdk11u'
-    - run: ${{ steps.buildJDK.outputs.BuildJDKDir }}/bin/java -version
-  openj914:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-16.04, macos-10.15] #[ubuntu-16.04, macos-10.15, windows-2016]
-    steps:
-    - uses: actions/checkout@v1
-    - uses: ./
-      id: buildJDK
-      with: 
-        javaToBuild: 'jdk14u'
-        impl: 'openj9'
-    - run: ${{ steps.buildJDK.outputs.BuildJDKDir }}/bin/java -version
-  openj911:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-16.04, macos-10.15] #[ubuntu-16.04, macos-10.15, windows-2016]
-    steps:
-    - uses: actions/checkout@v1
-    - uses: ./
-      id: buildJDK
-      with: 
-        javaToBuild: 'jdk11u'
+        javaToBuild: ${{ matrix.javaToBuild}}
         impl: 'openj9'
     - run: ${{ steps.buildJDK.outputs.BuildJDKDir }}/bin/java -version
