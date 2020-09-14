@@ -85,7 +85,7 @@ export async function buildJDK(
   }
 
   await exec.exec(`bash ./makejdk-any-platform.sh \
-  -J '${jdkBootDir}' \
+  -J "${jdkBootDir}" \
   --configure-args "${configureArgs}" \
   -d artifacts \
   --target-file-name ${fullFileName} \

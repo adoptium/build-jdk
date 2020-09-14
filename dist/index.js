@@ -3252,7 +3252,7 @@ function buildJDK(javaToBuild, impl, usePRRef) {
             fullFileName = `${fileName}.zip`;
         }
         yield exec.exec(`bash ./makejdk-any-platform.sh \
-  -J '${jdkBootDir}' \
+  -J "${jdkBootDir}" \
   --configure-args "${configureArgs}" \
   -d artifacts \
   --target-file-name ${fullFileName} \
