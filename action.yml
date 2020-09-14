@@ -11,7 +11,8 @@ inputs:
     description: 'A boolean value ("true" or "false") on whether using default openjdk-build repo or PR repo.'
     required: false
 outputs:
-  BuildJDKDir: # build jdk images directory
+  BuildJDKDir:
+    description: 'build jdk images directory'
 runs:
   using: 'node12'
   main: 'dist/index.js'
