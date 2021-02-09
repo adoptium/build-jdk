@@ -3589,11 +3589,13 @@ function getBootJdkVersion(javaToBuild) {
     let bootJDKVersion;
     //latest jdk need update continually
     if (`${javaToBuild}` === 'jdk') {
-        bootJDKVersion = '15';
+        bootJDKVersion = '16';
     }
     else {
         bootJDKVersion = javaToBuild.replace('jdk', '');
-        bootJDKVersion = bootJDKVersion.substr(0, bootJDKVersion.length - 1);
+        if (bootJDKVersion.includes('u')) {
+            bootJDKVersion = bootJDKVersion.substr(0, bootJDKVersion.length - 1);
+        }
         bootJDKVersion = (parseInt(bootJDKVersion) - 1).toString();
     }
     return bootJDKVersion;
