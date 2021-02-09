@@ -45,7 +45,7 @@ export async function buildJDK(
   await installDependencies(javaToBuild, impl)
   let jdkBootDir = ''
   const bootJDKVersion = getBootJdkVersion(javaToBuild)
-
+  
   if (`JAVA_HOME_${bootJDKVersion}_X64` in process.env) {
     jdkBootDir = process.env[`JAVA_HOME_${bootJDKVersion}_X64`] as string
     if (IS_WINDOWS) {
@@ -310,10 +310,12 @@ function getBootJdkVersion(javaToBuild: string): string {
 
   //latest jdk need update continually
   if (`${javaToBuild}` === 'jdk') {
-    bootJDKVersion = '15'
+    bootJDKVersion = '16'
   } else {
     bootJDKVersion = javaToBuild.replace('jdk', '')
-    bootJDKVersion = bootJDKVersion.substr(0, bootJDKVersion.length - 1)
+    if (bootJDKVersion.includes('u')) {
+      bootJDKVersion = bootJDKVersion.substr(0, bootJDKVersion.length - 1)
+    }
     bootJDKVersion = (parseInt(bootJDKVersion) - 1).toString()
   }
   return bootJDKVersion
