@@ -4,7 +4,7 @@ An action to build OpenJDK from AdoptOpenJDK/openjdk-build
 
 ## Usage
 
-See [action.yml](https://github.com/AdoptOpenJDK/build-jdk-hotspot/master/action.yml)
+See [action.yml](https://github.com/AdoptOpenJDK/build-jdk/master/action.yml)
 
 ## Support
 
