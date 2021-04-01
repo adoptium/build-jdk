@@ -11,12 +11,12 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-16.04, macos-10.15, windows-2016]
-        javaToBuild: [jdk11u, jdk15u]
+        javaToBuild: [jdk11u, jdk16u]
     steps:
     - uses: actions/checkout@v1
     - uses: ./
       id: buildJDK
-      with: 
+      with:
         javaToBuild: ${{ matrix.javaToBuild}}
     - run: ${{ steps.buildJDK.outputs.BuildJDKDir }}/bin/java -version
   openj9:
@@ -25,12 +25,12 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-16.04, macos-10.15]
-        javaToBuild: [jdk11u, jdk15u]
+        javaToBuild: [jdk11u, jdk16u]
     steps:
     - uses: actions/checkout@v1
     - uses: ./
       id: buildJDK
-      with: 
+      with:
         javaToBuild: ${{ matrix.javaToBuild}}
         impl: 'openj9'
     - run: ${{ steps.buildJDK.outputs.BuildJDKDir }}/bin/java -version
