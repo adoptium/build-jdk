@@ -67,17 +67,27 @@ export async function buildJDK(
   let configureArgs
   const fileName = `Open${javaToBuild.toUpperCase()}-jdk_x64_${targetOs}_${impl}_${time}`
   let fullFileName = `${fileName}.tar.gz`
+  let skipFreetype = ""
   if (`${targetOs}` === 'mac') {
     configureArgs = "--disable-warnings-as-errors --with-extra-cxxflags='-stdlib=libc++ -mmacosx-version-min=10.8'"
   } else if (`${targetOs}` === 'linux') {
+    skipFreetype = "--skip-freetype"
+
     if (`${impl}` === 'hotspot') {
-      configureArgs = '--disable-ccache --enable-dtrace=auto --disable-warnings-as-errors'
+      configureArgs = '--disable-ccache --disable-warnings-as-errors'
     } else {
-      configureArgs = '--disable-ccache --enable-jitserver --enable-dtrace=auto --disable-warnings-as-errors --with-openssl=/usr/local/openssl-1.0.2 --enable-cuda --with-cuda=/usr/local/cuda-9.0'
+      configureArgs = '--disable-ccache --enable-jitserver --disable-warnings-as-errors --with-openssl=/usr/local/openssl-1.0.2 --enable-cuda --with-cuda=/usr/local/cuda-9.0'
+    }
+
+    // If current JDK version is greater than (or equal to) 15, "auto" is no longer a valid value for the enable-dtrace config parameter.
+    if ((parseInt(getBootJdkVersion(javaToBuild)) + 1) >= 15) {
+      configureArgs = configureArgs + ' --enable-dtrace'
+    } else {
+      configureArgs = configureArgs + ' --enable-dtrace=auto'
     }
   } else {
     if (`${impl}` === 'hotspot') {
-      configureArgs = "--disable-ccache --enable-dtrace=auto --disable-warnings-as-errors"
+      configureArgs = "--disable-ccache --disable-warnings-as-errors"
     } else {
       configureArgs = "--with-freemarker-jar='c:/freemarker.jar' --with-openssl='c:/OpenSSL-1.1.1g-x86_64-VS2017' --enable-openssl-bundling --enable-cuda -with-cuda='C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v9.0'"
     }
@@ -86,6 +96,7 @@ export async function buildJDK(
 
   await exec.exec(`bash ./makejdk-any-platform.sh \
   -J "${jdkBootDir}" \
+  skipFreetype \
   --configure-args "${configureArgs}" \
   -d artifacts \
   --target-file-name ${fullFileName} \
@@ -209,6 +220,7 @@ async function installLinuxDepends(javaToBuild: string, impl: string): Promise<v
     libxt-dev \
     libxtst-dev \
     make \
+    systemtap-sdt-dev \
     libnuma-dev \
     gcc-multilib \
     pkg-config'
