@@ -3299,7 +3299,7 @@ const childProcess = __importStar(__webpack_require__(129));
 let tempDirectory = process.env['RUNNER_TEMP'] || '';
 const workDir = process.env['GITHUB_WORKSPACE'];
 //const dependenciesDir =  `${workDir}/tmp`
-const buildDir = `${workDir}/openjdk-build`;
+const buildDir = `${workDir}/temurin-build`;
 const IS_WINDOWS = process.platform === 'win32';
 const targetOs = IS_WINDOWS ? 'windows' : process.platform === 'darwin' ? 'mac' : 'linux';
 if (!tempDirectory) {
@@ -3403,7 +3403,7 @@ exports.buildJDK = buildJDK;
 function getOpenjdkBuildResource(usePPRef) {
     return __awaiter(this, void 0, void 0, function* () {
         if (!usePPRef) {
-            yield exec.exec(`git clone --depth 1 https://github.com/AdoptOpenJDK/openjdk-build.git`);
+            yield exec.exec(`git clone --depth 1 https://github.com/adoptium/temurin-build.git`);
         }
     });
 }

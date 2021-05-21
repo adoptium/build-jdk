@@ -13,7 +13,7 @@ jobs:
         javaToBuild: [jdk11u, jdk16u]
     steps:
     - uses: actions/checkout@v1
-    - uses: AdoptOpenJDK/build-jdk@v1
+    - uses: adoptium/build-jdk@v1
       id: buildJDK
       with:
         javaToBuild: ${{ matrix.javaToBuild }}
@@ -27,7 +27,7 @@ jobs:
         javaToBuild: [jdk11u, jdk16u]
     steps:
     - uses: actions/checkout@v1
-    - uses: AdoptOpenJDK/build-jdk@v1
+    - uses: adoptium/build-jdk@v1
       id: buildJDK
       with:
         javaToBuild: ${{ matrix.javaToBuild }}

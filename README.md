@@ -1,6 +1,6 @@
-# Building OpenJDK from AdoptOpenJDK/openjdk-build
+# Building personal binaries using adoptium/temurin-build scripts
 
-An action to build OpenJDK from AdoptOpenJDK/openjdk-build
+An action to build personal binaries using adoptium/temurin-build scripts
 
 ## Usage
 

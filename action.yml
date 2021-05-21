@@ -1,5 +1,5 @@
 name: 'build-jdk'
-description: 'Build different version of openjdk from AdoptOpenJDK community'
+description: 'Build personal builds from Adoptium community build scripts'
 author: 'Sophia Guo'
 inputs:
   javaToBuild:
@@ -8,7 +8,7 @@ inputs:
   impl:
     default: 'hotspot'
   usePRRef:
-    description: 'A boolean value ("true" or "false") on whether using default openjdk-build repo or PR repo.'
+    description: 'A boolean value ("true" or "false") on whether using default temurin-build repo or PR repo.'
     required: false
 outputs:
   BuildJDKDir:
