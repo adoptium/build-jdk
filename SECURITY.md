@@ -12,6 +12,6 @@ We currently support the following versions with security updates.
 
 ## Reporting a Vulnerability
 
-Please report vulnerabilities to [security@adoptium.net](security@adoptium.net).
+Vulnerabilities can be reported either via email to the Eclipse Security Team or directly with a project via the Eclipse Foundation's Bugzilla instance as described at https://www.eclipse.org/security/
 
 A member of the security team will respond within 48 hours with details on how to proceed including whether or not the vulnerability was accepted, declined or requires further investigation.
