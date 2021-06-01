@@ -3380,7 +3380,7 @@ function buildJDK(javaToBuild, impl, usePRRef) {
         }
         yield exec.exec(`bash ./makejdk-any-platform.sh \
   -J "${jdkBootDir}" \
-  skipFreetype \
+  "${skipFreetype}" \
   --configure-args "${configureArgs}" \
   -d artifacts \
   --target-file-name ${fullFileName} \
