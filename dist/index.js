@@ -3328,7 +3328,10 @@ function buildJDK(javaToBuild, impl, usePRRef) {
         //pre-install dependencies
         yield installDependencies(javaToBuild, impl);
         let jdkBootDir = '';
-        const bootJDKVersion = getBootJdkVersion(javaToBuild);
+        let bootJDKVersion = getBootJdkVersion(javaToBuild);
+        if (parseInt(bootJDKVersion) == 10) {
+            bootJDKVersion = '11';
+        }
         if (`JAVA_HOME_${bootJDKVersion}_X64` in process.env) {
             jdkBootDir = process.env[`JAVA_HOME_${bootJDKVersion}_X64`];
             if (IS_WINDOWS) {
@@ -3362,12 +3365,15 @@ function buildJDK(javaToBuild, impl, usePRRef) {
                 configureArgs = '--disable-ccache --enable-jitserver --disable-warnings-as-errors --with-openssl=/usr/local/openssl-1.0.2 --enable-cuda --with-cuda=/usr/local/cuda-9.0';
             }
             // If current JDK version is greater than (or equal to) 15, "auto" is no longer a valid value for the enable-dtrace config parameter.
-            if ((parseInt(getBootJdkVersion(javaToBuild)) + 1) >= 15) {
-                configureArgs = configureArgs + ' --enable-dtrace';
-            }
-            else {
-                configureArgs = configureArgs + ' --enable-dtrace=auto';
-            }
+            // TODO: Figure out why the sdt.h file can't be found by AC_CHECK_HEADERS in jvm-features.m4,
+            //       but only during a git action. Apt-getting systemtap-sdt-dev definitely puts sdt.h
+            //       on the machine, and a sandbox addition of AC_CHECK_FILE confirms this.
+            //       Dtrace cannot be successfully enabled in any build until this is resolved.
+            // if ((parseInt(getBootJdkVersion(javaToBuild)) + 1) >= 15) {
+            //   configureArgs = configureArgs + ' --enable-dtrace'
+            // } else {
+            //   configureArgs = configureArgs + ' --enable-dtrace=auto'
+            // }
         }
         else {
             if (`${impl}` === 'hotspot') {
