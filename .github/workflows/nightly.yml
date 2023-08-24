@@ -12,7 +12,7 @@ jobs:
         os: [ubuntu-18.04, macos-10.15, windows-2016]
         javaToBuild: [jdk11u, jdk17u]
     steps:
-    - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
+    - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3.6.0
     - uses: adoptium/build-jdk@2f4b8fc221a368382953dadd191d60da48a67063 # v1.0.4
       id: buildJDK
       with:
@@ -26,7 +26,7 @@ jobs:
         os: [ubuntu-18.04, macos-10.15]
         javaToBuild: [jdk11u, jdk17u]
     steps:
-    - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
+    - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3.6.0
     - uses: adoptium/build-jdk@2f4b8fc221a368382953dadd191d60da48a67063 # v1.0.4
       id: buildJDK
       with:
