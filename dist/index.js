@@ -3455,6 +3455,7 @@ function installWindowsDepends(javaToBuild, impl) {
   --root "C:\\cygwin64"`);
         yield exec.exec(`C:/cygwin64/bin/git config --system core.autocrlf false`);
         core.addPath(`C:\\cygwin64\\bin`);
+        core.addPath(`C:\\cygwin64`);
         if (`${impl}` === 'openj9') {
             yield tc.downloadTool(`https://repo.maven.apache.org/maven2/freemarker/freemarker/2.3.8/freemarker-2.3.8.jar`, 'c:\\freemarker.jar');
             //nasm
